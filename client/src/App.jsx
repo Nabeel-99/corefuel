@@ -1,6 +1,6 @@
 import "./App.css";
 import StarterPage from "./components/StarterPage";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import SignUp from "./pages/register/SignUp";
@@ -22,7 +22,7 @@ import BodyAnatomy from "./pages/anatomy/BodyAnatomy";
 import ScrollToTop from "./components/ScrollToTop";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setAuth, setToken, setUser } from "./redux/authSlice";
+import { clearUser, setAuth, setToken, setUser } from "./redux/authSlice";
 import axios from "axios";
 import { BACKEND_URL } from "./utils";
 import ProtectedRoute from "./pages/ProtectedRoute";
@@ -34,9 +34,16 @@ import LoadingAnimation from "./components/LoadingAnimation";
 
 function App() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const token = localStorage.getItem("token");
+  useEffect(() => {
+    if (!token) {
+      dispatch(clearUser());
+      navigate("/login");
+    }
+  }, [token]);
   const authenticateUser = async () => {
-    const token = localStorage.getItem("token");
     if (!token) return;
     setLoading(true);
     try {
@@ -45,6 +52,7 @@ function App() {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log(response.data);
       if (response.status === 200) {
         dispatch(setAuth(true));
         dispatch(setUser(response.data.user));
@@ -52,6 +60,10 @@ function App() {
       }
     } catch (error) {
       console.log(error);
+      if (error.response.status >= 401 || error.response.status <= 500) {
+        dispatch(clearUser());
+        navigate("/login");
+      }
     } finally {
       setLoading(false);
     }

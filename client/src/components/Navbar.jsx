@@ -13,7 +13,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const username = useSelector((state) => state.auth.user?.username);
   const isLoggedIn = useSelector((state) => state.auth.isAuthenticated);
-  console.log(isLoggedIn);
   const [isBurgerMenu, setIsBurgerMenu] = useState(false);
   const categories = ["chest", "back", "shoulders", "legs", "arm", "core"];
   const paths = [

@@ -16,7 +16,7 @@ const videoSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ["chest", "shoulders", "back", "legs"],
+      enum: ["chest", "shoulders", "back", "legs", "core"],
       required: true,
     },
     subCategory: {

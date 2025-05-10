@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 
 const Home = () => {
   const navigate = useNavigate();
-  const token = useSelector((state) => state.auth.token);
+  const token = localStorage.getItem("token");
   const gridDetails = [
     {
       title: "Workout Programs",
@@ -27,6 +27,8 @@ const Home = () => {
   useEffect(() => {
     if (token) {
       navigate("/dashboard");
+    } else {
+      navigate("/login");
     }
   }, []);
   return (
